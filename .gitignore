@@ -1,1 +1,38 @@
+# Environment and local secrets
 .env
+.env.*
+*.local
+!.env.example
+
+# Go build artifacts and binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Coverage and profiling outputs
+coverage.out
+coverage.*
+*.coverprofile
+*.prof
+*.pprof
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Generated example/runtime outputs
+examples/hermes_docs/output.json
+
+# OS metadata
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor directories
+.idea/
+.vscode/
