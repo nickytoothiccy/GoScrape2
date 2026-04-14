@@ -1,0 +1,15 @@
+version: "3.8"
+
+services:
+  stealthgraph:
+    build: ./go-fetcher
+    ports:
+      - "8899:8899"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8899/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3

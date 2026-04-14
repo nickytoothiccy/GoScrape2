@@ -1,0 +1,400 @@
+{
+  "development": {
+    "core_concepts": [
+      "Autonomous agent behavior that improves the longer it runs",
+      "Closed learning loop with agent-curated memory and periodic nudges",
+      "Skills system for procedural memory that the agent creates and reuses",
+      "Memory system with persistent cross-session recall and LLM summarization",
+      "MCP integration for safely extending Hermes with external tools",
+      "Context files and SOUL.md for shaping behavior and personality",
+      "Security controls including command approval, authorization, container isolation, secret redaction, and blocklists",
+      "Provider selection and model configuration through `hermes model`",
+      "Tool configuration through `hermes tools`",
+      "Full setup automation through `hermes setup`",
+      "Minimum 64K context window for multi-step tool-calling workflows",
+      "Custom endpoints with base URL and API key support",
+      "Messaging gateway integration and ACP editor integration",
+      "Skills can be searched and installed from public directories or docs-discovered indexes",
+      "MCP servers can be configured in `~/.hermes/config.yaml`",
+      "Hermes CLI is a terminal UI with sessions persisted in SQLite",
+      "Quick commands execute shell commands without invoking the LLM",
+      "Profiles are fully isolated Hermes environments",
+      "Terminal backends define where commands execute and how isolated they are",
+      "Configuration precedence is CLI arguments \u003e config.yaml \u003e .env \u003e built-in defaults",
+      "Context compression summarizes long conversations to fit model limits",
+      "Worktrees isolate parallel git-based agent sessions",
+      "Auxiliary models handle side tasks like vision, web extraction, approvals, compression, session search, skills hub, MCP dispatch, and memory flush"
+    ],
+    "features": [
+      "47 built-in tools",
+      "Built-in cron for scheduled automations",
+      "Parallel subagents for delegated workstreams",
+      "Programmatic tool calling via `execute_code`",
+      "Support for open standard skills via agentskills.io and the Skills Hub",
+      "Full web control including search, extract, browse, vision, image generation, and TTS",
+      "Works with Nous Portal, OpenRouter, OpenAI, Anthropic, OpenAI-compatible endpoints, or any custom endpoint",
+      "Messaging across CLI, Telegram, Discord, Slack, WhatsApp, Signal, Matrix, Mattermost, Email, SMS, DingTalk, Feishu/Lark, WeCom, Weixin, BlueBubbles, Home Assistant, webhooks, API server, ACP editor, cron, and batch",
+      "Runs on local, Docker, SSH, Daytona, Singularity, Modal, and Nix/NixOS",
+      "Research-ready workflows including batch processing, trajectory export, and RL training with Atropos",
+      "Slash commands for help, tools, model switching, personalities, saving conversations, skills browsing, and voice",
+      "Multiline input support",
+      "Task interruption and session resume",
+      "Sandboxed terminal support via Docker or SSH backend",
+      "Voice mode with local speech-to-text and spoken replies",
+      "Automated scheduled tasks via the gateway",
+      "Skills browsing and installation",
+      "ACP server support for editors like VS Code, Zed, and JetBrains",
+      "MCP server integration",
+      "Browser automation support",
+      "CLI setup wizard and terminal menu UI",
+      "Modal cloud execution backend",
+      "PTY terminal support",
+      "Honcho AI-native memory integration",
+      "Home Assistant integration",
+      "TTS premium voices via ElevenLabs",
+      "Diagnostics and configuration migration tools via `hermes doctor`, `hermes config check`, and `hermes config migrate`",
+      "One-line installer with automatic dependency handling",
+      "Termux-aware Android installation path",
+      "Manual install path with optional extras and submodules",
+      "Browser automation and web search/extract/crawl backends",
+      "Git worktree isolation for parallel agents",
+      "Background tasks with separate task IDs and non-blocking execution",
+      "Status bar with model, token usage, context bar, cost, and duration",
+      "Quick commands for zero-token shell actions",
+      "Streaming for CLI and messaging platforms",
+      "Docker hardening with dropped capabilities, no-new-privileges, and resource limits",
+      "SSH persistent shell with ControlMaster reuse",
+      "Modal and Daytona persistence across sessions",
+      "Singularity/Apptainer support for HPC/shared machines",
+      "File read safety limits and automatic read deduplication",
+      "Context compression with configurable thresholds and auxiliary summarizer model",
+      "Iteration budget pressure warnings",
+      "Privacy redaction for gateway PII",
+      "Security scanning and website blocklists",
+      "Credential pool strategies for multi-key rotation",
+      "Persistent profile-specific gateways and token lock safety",
+      "Tab completion for profile names and commands"
+    ],
+    "source_pages": [
+      {
+        "title": "Developer Guide",
+        "url": "/docs/developer-guide"
+      },
+      {
+        "title": "Features",
+        "url": "/docs/features"
+      },
+      {
+        "title": "Using Hermes - Sessions",
+        "url": "/docs/using-hermes/sessions"
+      },
+      {
+        "title": "CLI Interface",
+        "url": "/docs/using-hermes/cli-interface"
+      },
+      {
+        "title": "Profiles: Running Multiple Agents",
+        "url": "/docs/profiles-running-multiple-agents"
+      },
+      {
+        "title": "Git Worktrees",
+        "url": "/docs/git-worktrees"
+      },
+      {
+        "title": "Security",
+        "url": "/docs/security"
+      },
+      {
+        "title": "Nix \u0026 NixOS Setup",
+        "url": "/docs/getting-started/nix-nixos-setup"
+      },
+      {
+        "title": "Android / Termux",
+        "url": "/docs/getting-started/android-termux"
+      },
+      {
+        "title": "Updating \u0026 Uninstalling",
+        "url": "/docs/getting-started/updating-uninstalling"
+      }
+    ],
+    "workflows": [
+      "Set up Hermes on a supported runtime and configure providers/models",
+      "Use the messaging gateway or CLI to interact with the agent",
+      "Enable memory and skills so Hermes can retain knowledge and create reusable procedures",
+      "Connect MCP servers and filter their tools to extend capabilities safely",
+      "Use tools, subagents, and `execute_code` to automate multi-step tasks and parallelize work",
+      "Apply security controls and context files to manage behavior, permissions, and environment-specific instructions",
+      "Use `hermes config set` to update settings and route secrets correctly",
+      "Use `hermes config show`, `hermes config check`, and `hermes config migrate` to inspect and repair configuration",
+      "Choose a backend based on your environment: local for development, docker for sandboxing, ssh for remote dev, modal/daytona for cloud, singularity for HPC",
+      "Enable persistent shell when you want state to survive across commands, especially on SSH",
+      "Enable worktree mode when running multiple agents on the same repository",
+      "Tune compression and auxiliary model settings for long conversations or slow models",
+      "Use security settings like `redact_secrets`, `tirith_enabled`, and `website_blocklist` for safer execution",
+      "Use streaming, voice, quick commands, and display settings to adapt the UX to CLI or messaging platforms",
+      "Use `hermes update` for standard updates and validate with `hermes doctor` and version checks",
+      "Create and use profiles for isolated agents, then run profile-specific setup, chat, gateway, and doctor commands",
+      "Use `hermes sessions list`, `/title`, export, prune, and search tools to manage conversation history",
+      "Use `nix develop` for development shell workflows and `nix flake check` for validation",
+      "Use `hermes mcp add` for interactive OAuth bootstrap or pre-seed MCP tokens from another machine"
+    ]
+  },
+  "max_depth": 2,
+  "max_pages": 20,
+  "pages_crawled": 12,
+  "quickstart": {
+    "steps": [
+      "Install Hermes Agent with the one-line installer or your preferred platform-specific method",
+      "Reload your shell if needed",
+      "Set up or change the LLM provider using `hermes model`, `hermes tools`, or `hermes setup`",
+      "Start the CLI with `hermes`",
+      "Type a message and press Enter to chat",
+      "Use terminal-capable prompts to let Hermes run commands on your behalf",
+      "Type `/` to access slash commands such as `/help`, `/tools`, `/model`, `/personality pirate`, `/skills browse`, `/voice on`, and `/save`",
+      "Use `Alt+Enter` or `Ctrl+J` for multiline input",
+      "Interrupt a running task by typing a new message and pressing Enter, or use `Ctrl+C`",
+      "Resume later with `hermes --continue`, `hermes -c`, `hermes --resume \u003csession_id\u003e`, or `hermes -r \u003csession_id\u003e`",
+      "Use `hermes chat -q \"...\"` for single-query non-interactive mode",
+      "Optionally preload skills at launch with `hermes -s skill-one,skill-two`",
+      "Use `hermes -w` for isolated git worktrees when doing parallel work",
+      "If needed, switch to Docker or SSH for sandboxed or remote execution",
+      "Connect messaging platforms through `hermes gateway setup`",
+      "Enable voice support with `pip install \"hermes-agent[voice]\"` and `/voice on` or `/voice tts`"
+    ],
+    "summary": "The quickest path is to install Hermes Agent, configure a provider/model, start the CLI, and begin chatting. The quickstart also covers slash commands, multiline input, session resume, worktrees, and optional messaging or voice workflows."
+  },
+  "recommended_pages": [
+    {
+      "reason": "Best starting point for installation and initial setup of Hermes Agent.",
+      "title": "Getting Started",
+      "url": "/getting-started"
+    },
+    {
+      "reason": "Contains quick install, manual install, prerequisites, and verification steps.",
+      "title": "Installation",
+      "url": "/docs/getting-started/installation"
+    },
+    {
+      "reason": "Provides the fastest path from installation to first successful use of Hermes Agent.",
+      "title": "Quickstart",
+      "url": "/docs/getting-started/quickstart"
+    },
+    {
+      "reason": "Primary page for running Hermes from the terminal, keybindings, slash commands, skills, personalities, and session behavior.",
+      "title": "CLI Interface",
+      "url": "/docs/using-hermes/cli-interface"
+    },
+    {
+      "reason": "Explains config files, providers, models, options, backend settings, and configuration precedence.",
+      "title": "Configuration",
+      "url": "/docs/getting-started/configuration"
+    },
+    {
+      "reason": "Covers core CLI usage and how to operate Hermes after installation.",
+      "title": "Using Hermes",
+      "url": "/docs/using-hermes"
+    },
+    {
+      "reason": "Covers session resume, storage, search, and management commands.",
+      "title": "Sessions",
+      "url": "/docs/using-hermes/sessions"
+    },
+    {
+      "reason": "Primary page for development concepts, extension points, and contributor workflows.",
+      "title": "Developer Guide",
+      "url": "/docs/developer-guide"
+    },
+    {
+      "reason": "Summarizes important capabilities such as tools, messaging, voice, automation, and editor integrations.",
+      "title": "Features",
+      "url": "/docs/features"
+    },
+    {
+      "reason": "Details how to connect Hermes to Telegram, Discord, Slack, WhatsApp, Signal, Email, and Home Assistant.",
+      "title": "Messaging Platforms",
+      "url": "/docs/messaging-platforms"
+    },
+    {
+      "reason": "Covers external integrations such as ACP and MCP servers and other ecosystem connections.",
+      "title": "Integrations",
+      "url": "/docs/integrations"
+    },
+    {
+      "reason": "Helpful for practical workflows like sandboxing, voice mode, skills, automation, and development examples.",
+      "title": "Guides \u0026 Tutorials",
+      "url": "/docs/guides-tutorials"
+    },
+    {
+      "reason": "Covers approvals, redaction, scanning, and access controls.",
+      "title": "Security",
+      "url": "/docs/security"
+    },
+    {
+      "reason": "Primary page for multi-agent setup, cloning, aliases, gateways, and profile management.",
+      "title": "Profiles: Running Multiple Agents",
+      "url": "/docs/profiles-running-multiple-agents"
+    },
+    {
+      "reason": "Explains isolated worktree-based development for multiple agents.",
+      "title": "Git Worktrees",
+      "url": "/docs/git-worktrees"
+    },
+    {
+      "reason": "Covers the Nix flake install flow, NixOS module setup, configuration, secrets, container mode, and troubleshooting.",
+      "title": "Nix \u0026 NixOS Setup",
+      "url": "/docs/getting-started/nix-nixos-setup"
+    },
+    {
+      "reason": "Explains the Android-specific installation flow and tested mobile bundle.",
+      "title": "Android / Termux",
+      "url": "/docs/getting-started/android-termux"
+    },
+    {
+      "reason": "Provides update, rollback, and uninstall procedures.",
+      "title": "Updating \u0026 Uninstalling",
+      "url": "/docs/getting-started/updating-uninstalling"
+    },
+    {
+      "reason": "Reference material for commands, settings, and advanced configuration.",
+      "title": "Reference",
+      "url": "/docs/reference"
+    }
+  ],
+  "setup": {
+    "installation_methods": [
+      "One-line installer via curl | bash for Linux, macOS, WSL2, and Android/Termux",
+      "Manual installation from source using git, uv, Python 3.11 virtual environment, and optional extras",
+      "Nix install via nix run, nix profile install, or local nix build",
+      "NixOS module setup via flake input with native or container mode",
+      "Termux-specific Android installation flow",
+      "Windows via WSL2 only; native Windows is not supported",
+      "Terminal backend setup for local, Docker, SSH, Modal, Daytona, or Singularity/Apptainer execution",
+      "Profile-based isolated environments with `hermes profile create`",
+      "Messaging platform-managed install/update workflows"
+    ],
+    "prerequisites": [
+      "A shell or terminal environment on Linux, macOS, WSL2, or Android Termux",
+      "For Windows, WSL2 installed first",
+      "Git is required for manual installs and source workflows",
+      "uv Python package manager for source installs and updates",
+      "Python 3.11 for manual virtual environment setup",
+      "At least one LLM provider API key or OAuth access, depending on provider",
+      "A provider/model with at least 64,000 tokens of context for multi-step tool workflows",
+      "For local models, a context size of at least 64K tokens",
+      "Hermes configuration stored under `~/.hermes/`",
+      "For Docker backend: Docker Desktop or Docker Engine installed and running",
+      "For SSH backend: `TERMINAL_SSH_HOST` and `TERMINAL_SSH_USER` environment variables",
+      "For Modal backend: `MODAL_TOKEN_ID` and `MODAL_TOKEN_SECRET`, or `~/.modal.toml`",
+      "For Daytona backend: `DAYTONA_API_KEY`",
+      "For Singularity backend: `apptainer` or `singularity` binary in PATH",
+      "For local STT: `faster-whisper` installed separately",
+      "For web features: one of `FIRECRAWL_API_KEY`, `PARALLEL_API_KEY`, `TAVILY_API_KEY`, or `EXA_API_KEY` depending on backend",
+      "Android phone with Termux for mobile setup",
+      "Optional: separate bot tokens for Telegram, Discord, Slack, WhatsApp, or Signal when running multiple gateways",
+      "Optional: shell access to edit profile files under `~/.hermes/profiles/\u003cname\u003e/`"
+    ],
+    "source_pages": [
+      {
+        "title": "Installation",
+        "url": "https://docs.hermesagent.com/installation"
+      },
+      {
+        "title": "Quickstart Tutorial",
+        "url": "https://docs.hermesagent.com/quickstart"
+      },
+      {
+        "title": "Learning Path",
+        "url": "https://docs.hermesagent.com/learning-path"
+      },
+      {
+        "title": "Configuration",
+        "url": "https://docs.hermesagent.com/configuration"
+      },
+      {
+        "title": "Messaging Gateway",
+        "url": "https://docs.hermesagent.com/messaging-gateway"
+      },
+      {
+        "title": "Tools \u0026 Toolsets",
+        "url": "https://docs.hermesagent.com/tools"
+      },
+      {
+        "title": "Memory System",
+        "url": "https://docs.hermesagent.com/memory"
+      },
+      {
+        "title": "Skills System",
+        "url": "https://docs.hermesagent.com/skills"
+      },
+      {
+        "title": "MCP Integration",
+        "url": "https://docs.hermesagent.com/mcp"
+      },
+      {
+        "title": "Android / Termux",
+        "url": "/docs/getting-started/android-termux"
+      },
+      {
+        "title": "Nix \u0026 NixOS Setup",
+        "url": "/docs/getting-started/nix-nixos-setup"
+      },
+      {
+        "title": "Getting Started",
+        "url": "/getting-started"
+      },
+      {
+        "title": "CLI Interface",
+        "url": "/cli-interface"
+      },
+      {
+        "title": "Configuration",
+        "url": "/configuration"
+      },
+      {
+        "title": "Profiles: Running Multiple Agents",
+        "url": "/profiles-running-multiple-agents"
+      }
+    ],
+    "steps": [
+      "Run the one-line installer: `curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash`",
+      "If on Android/Termux, follow the Termux-aware path or the manual Termux guide for tested mobile installation",
+      "If on Windows, install WSL2 first and run the installer inside the WSL2 terminal",
+      "Reload your shell after installation with `source ~/.bashrc` or `source ~/.zshrc`",
+      "For manual install, clone the repo with `git clone --recurse-submodules https://github.com/NousResearch/hermes-agent.git` and `cd` into it",
+      "Install uv if needed: `curl -LsSf https://astral.sh/uv/install.sh | sh`",
+      "Create a Python 3.11 virtual environment: `uv venv venv --python 3.11`",
+      "Install dependencies with `uv pip install -e \".[all]\"` or `uv pip install -e \".\"` for core only",
+      "Install optional submodules if needed, such as `uv pip install -e \"./tinker-atropos\"`",
+      "Optionally install Node.js dependencies with `npm install` for browser automation and WhatsApp bridge",
+      "Create configuration directories under `~/.hermes`, copy `cli-config.yaml.example` to `~/.hermes/config.yaml`, and create `~/.hermes/.env`",
+      "Add API keys to `~/.hermes/.env` or via `hermes config set`",
+      "Configure provider/model with `hermes model`",
+      "Configure tools with `hermes tools`",
+      "Optionally run the full setup wizard with `hermes setup`",
+      "Verify with `hermes version`, `hermes doctor`, `hermes status`, and a test chat command",
+      "For Nix users, run `nix run github:NousResearch/hermes-agent -- setup` or `nix profile install github:NousResearch/hermes-agent`",
+      "For a local Nix clone, run `nix build` and then `./result/bin/hermes setup`",
+      "For NixOS, add the flake input, import `hermes-agent.nixosModules.default`, set `services.hermes-agent.enable = true`, and run `sudo nixos-rebuild switch`",
+      "If using NixOS container mode, set `container.enable = true` and related container options",
+      "Use `hermes gateway install` to set up the launchd/systemd user service on non-NixOS systems",
+      "Create a profile with `hermes profile create \u003cname\u003e`, then run the profile-specific setup command",
+      "Enable shell completion with `hermes completion bash` or `hermes completion zsh`",
+      "Choose a terminal backend with `terminal.backend` set to local, docker, ssh, modal, daytona, or singularity",
+      "Set up messaging platforms through `hermes gateway setup` or platform-specific gateway commands"
+    ]
+  },
+  "sources": [
+    "https://hermes-agent.nousresearch.com/docs",
+    "https://hermes-agent.nousresearch.com/docs/getting-started/quickstart",
+    "https://hermes-agent.nousresearch.com/docs/skills",
+    "https://hermes-agent.nousresearch.com/docs/getting-started/installation",
+    "https://hermes-agent.nousresearch.com/docs/getting-started/termux",
+    "https://hermes-agent.nousresearch.com/docs/getting-started/nix-setup",
+    "https://hermes-agent.nousresearch.com/docs/getting-started/updating",
+    "https://hermes-agent.nousresearch.com/docs/getting-started/learning-path",
+    "https://hermes-agent.nousresearch.com/docs/user-guide/configuration",
+    "https://hermes-agent.nousresearch.com/docs/user-guide/cli",
+    "https://hermes-agent.nousresearch.com/docs/user-guide/sessions",
+    "https://hermes-agent.nousresearch.com/docs/user-guide/profiles"
+  ]
+}
