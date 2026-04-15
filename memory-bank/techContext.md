@@ -104,10 +104,10 @@ stealthfetch/
 │   └── errors/         # Custom error types
 ├── pkg/
 │   ├── graph/          # Core engine ✅ (loop protection, branching)
-│   ├── scrapegraph/    # 3 graph workflows (SmartScraper, Search, DepthSearch)
+	│   ├── scrapegraph/    # graph workflows incl. SmartScraper, Search, DepthSearch, lite/search-link/markdown variants
 │   ├── nodes/          # 9/30 nodes done
 │   ├── llm/            # LLM providers (1/10 done, interface ready)
-│   ├── loaders/        # Fetch backends (3/4: Local, UTLS, Rod)
+	│   ├── loaders/        # Fetch backends + detection/factory/escalation helpers
 │   ├── prompts/        # Template system ✅
 │   ├── telemetry/      # Observability (0%)
 │   ├── chunking/       # Text splitting ✅
@@ -242,6 +242,14 @@ scrapegraphai/
 - PowerShell workspace syntax (@workspace:) doesn't work - use full paths
 - Must use semicolons (;) not && for command chaining
 - Windows paths need escaping in some contexts
+
+## Current Fetch Strategy Notes
+- `Config.Headless` still works as the legacy/simple switch between UTLS and Rod
+- `Config.FetchStrategy` now adds explicit strategy selection: `utls`, `rod`, or `auto`
+- `auto` currently means: try UTLS first, then fall back to Rod if the response looks like an anti-bot block
+- Centralized block heuristics live in `pkg/loaders/detection.go`
+- Shared loader selection lives in `pkg/loaders/factory.go`
+- Automatic fallback logic lives in `pkg/loaders/escalating.go`
 
 ## Next Dependencies to Add
 Priority order based on implementation plan:

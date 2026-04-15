@@ -1,7 +1,21 @@
 # Active Context
 
 ## Current State
-GoScrape2 has completed another meaningful implementation slice and is now approximately **~43% complete** compared to full ScrapeGraphAI.
+GoScrape2 has completed another meaningful implementation slice and is now approximately **~44% complete** compared to full ScrapeGraphAI.
+
+## What Was Built This Session
+
+### 31. Auto Fetch Strategy + Block-Aware Fallback (`internal/models/models.go`, `pkg/loaders/*.go`, `pkg/scrapegraph/*.go`)
+- Added `FetchStrategy` to shared config to support explicit fetch selection with `utls`, `rod`, or `auto`
+- Added a shared loader factory so graph-level fetch selection no longer hardcodes UTLS vs Rod in multiple places
+- Added centralized anti-bot block detection heuristics for common block signals like 403/429/503 and Cloudflare/CAPTCHA-style page markers
+- Added `EscalatingLoader` so the system can attempt UTLS first and automatically fall back to Rod when a response appears blocked
+- Updated `SmartScraperGraph`, `SmartScraperLiteGraph`, `SearchLinkGraph`, `MarkdownifyGraph`, and `DepthSearchGraph` link discovery to use the shared loader selection path
+- Added targeted tests covering block detection, escalation behavior, and graph-level loader selection
+- Verified targeted package tests pass for:
+  - `./pkg/loaders`
+  - `./pkg/scrapegraph`
+- **Impact:** anti-bot resilience is now more consistent and more automatic across the main fetch-driven graph workflows, providing a stronger foundation for future proxy/session work
 
 ## What Was Built This Session
 

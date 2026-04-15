@@ -27,6 +27,7 @@
   - UTLS TLS fingerprinting
   - **NEW: Rod headless browser (stealth, Cloudflare bypass)**
   - **NEW: Document loader with real PDF/DOCX extraction**
+  - **NEW: Shared fetch strategy factory + UTLS→Rod auto-escalation on likely block pages**
 - ✅ Supporting packages
   - Chunking (token-aware splitting)
   - Markdown (HTML→text conversion)
@@ -136,6 +137,7 @@
 - ✅ **Infinite loop protection** (MaxIterations = 100)
 - ✅ **Context timeout support** (SearchGraph overall + per-URL)
 - ✅ **Browser automation** (Rod headless + stealth + Cloudflare bypass)
+- ✅ **Block-aware fetch escalation** (`FetchStrategy`, block detection heuristics, UTLS→Rod fallback)
 - ✅ **Telemetry basics** (HTTP structured logging + timing)
 - ✅ **Graph/node timing telemetry baseline**
 - ✅ **Document loaders (PDF, DOCX)**
@@ -149,7 +151,7 @@
 - [ ] Vision model support
 - [ ] Speech synthesis
 
-## Overall Completion: ~43%
+## Overall Completion: ~44%
 
 **What's Working:**
 - SmartScraperGraph with retry + Rod headless browser support
@@ -178,6 +180,9 @@
 - DuckDuckGo web search
 - Rod browser fetching (JS-rendered pages, Cloudflare bypass)
 - UTLS HTTP fetching (static pages, stealth TLS)
+- Shared loader factory for consistent fetch selection across graphs
+- Auto fetch strategy (`FetchStrategy: auto`) with UTLS→Rod escalation on likely anti-bot blocks
+- Centralized anti-bot block detection heuristics for common challenge/block pages
 - HTML→text conversion
 - OpenAI extraction (gpt-4o/gpt-4o-mini)
 - HTTP API (scrape, search, depth-search, fetch, health)
@@ -200,6 +205,7 @@
  - Additional document graph variants and richer document processing
 - Better extraction quality tuning for large-site crawls, including testing with stronger models before judging final scrape quality
 - Validation rerun of the new Hermes balanced crawl profile to measure whether broader link frontier improves result quality materially
+- Proxy rotation, cookie/session persistence, and richer anti-bot escalation policies beyond the current UTLS→Rod fallback
 
 ## Next Priority Tasks
 

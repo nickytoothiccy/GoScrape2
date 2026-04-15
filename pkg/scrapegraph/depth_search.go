@@ -196,13 +196,7 @@ func (d *DepthSearchGraph) crawl(ctx context.Context, pageURL string, depth int)
 
 // discoverLinks fetches a page and extracts links using SearchLinkNode
 func (d *DepthSearchGraph) discoverLinks(ctx context.Context, pageURL string) ([]string, error) {
-	// Create loader
-	var loader loaders.Loader
-	if d.config.Headless {
-		loader = loaders.NewDefaultRodLoader(d.verbose)
-	} else {
-		loader = loaders.NewUTLSLoader("chrome", "", 30*time.Second)
-	}
+	loader := loaders.NewFetchLoader(pageURL, d.config)
 
 	// Fetch the page
 	fetchResult, err := loader.Load(ctx, pageURL)

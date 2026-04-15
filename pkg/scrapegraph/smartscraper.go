@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"log"
 	"strings"
-	"time"
 
 	"stealthfetch/internal/models"
 	"stealthfetch/pkg/graph"
@@ -84,13 +83,7 @@ func (s *SmartScraperGraph) executeOnce(ctx context.Context) (json.RawMessage, e
 	// Create LLM client
 	llmClient := llm.NewOpenAIClient(s.config.LLMAPIKey, s.config)
 
-	// Create loader — Rod for headless browser, UTLS for fast HTTP
-	var loader loaders.Loader
-	if s.config.Headless {
-		loader = loaders.NewDefaultRodLoader(s.config.Verbose)
-	} else {
-		loader = loaders.NewUTLSLoader("chrome", "", 30*time.Second)
-	}
+	loader := loaders.NewFetchLoader(s.source, s.config)
 
 	// Create nodes
 	fetchNode := nodes.NewFetchNode(loader, s.config)

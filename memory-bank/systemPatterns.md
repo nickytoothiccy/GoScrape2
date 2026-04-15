@@ -164,6 +164,25 @@ Every graph follows this pattern:
 
 State keys are typed and validated.
 
+## Fetch Strategy Pattern
+
+Fetch selection is now centralized instead of being hardcoded separately inside each graph:
+
+```go
+source + config -> loaders.NewFetchLoader(...) -> chosen loader
+                                           ├── LocalLoader   (raw HTML input)
+                                           ├── UTLSLoader    (transport/browser impersonation)
+                                           ├── RodLoader     (full browser + stealth)
+                                           └── EscalatingLoader (UTLS -> Rod fallback)
+```
+
+- `Config.FetchStrategy` supports `utls`, `rod`, or `auto`
+- Empty `FetchStrategy` preserves the older `Headless`-based behavior for backwards compatibility
+- `EscalatingLoader` uses centralized block heuristics to decide when to fall back from UTLS to Rod
+- Block detection currently looks at status-based and content-based signals such as `403`, `429`, `503`, Cloudflare/challenge strings, CAPTCHA markers, and common “verify you are human” text
+
+This keeps graphs focused on orchestration while loaders own anti-bot fetch decisions.
+
 ## Multi-Graph Pattern
 
 `SmartScraperMultiGraph` uses a composition-first pattern:

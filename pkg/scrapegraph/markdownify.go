@@ -3,8 +3,6 @@ package scrapegraph
 import (
 	"context"
 	"fmt"
-	"strings"
-	"time"
 
 	"stealthfetch/internal/models"
 	"stealthfetch/pkg/graph"
@@ -57,11 +55,5 @@ func (m *MarkdownifyGraph) Run(ctx context.Context) (string, error) {
 }
 
 func chooseMarkdownLoader(source string, config *models.Config) loaders.Loader {
-	if strings.HasPrefix(strings.TrimSpace(source), "<") {
-		return loaders.NewLocalLoader()
-	}
-	if config.Headless {
-		return loaders.NewDefaultRodLoader(config.Verbose)
-	}
-	return loaders.NewUTLSLoader("chrome", "", 30*time.Second)
+	return loaders.NewFetchLoader(source, config)
 }

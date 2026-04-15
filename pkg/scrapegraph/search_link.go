@@ -3,8 +3,6 @@ package scrapegraph
 import (
 	"context"
 	"fmt"
-	"strings"
-	"time"
 
 	"stealthfetch/internal/models"
 	"stealthfetch/pkg/graph"
@@ -97,11 +95,5 @@ func (g *SearchLinkGraph) resolveBaseURL() string {
 }
 
 func chooseSearchLinkLoader(source string, config *models.Config) loaders.Loader {
-	if strings.HasPrefix(strings.TrimSpace(source), "<") {
-		return loaders.NewLocalLoader()
-	}
-	if config.Headless {
-		return loaders.NewDefaultRodLoader(config.Verbose)
-	}
-	return loaders.NewUTLSLoader("chrome", "", 30*time.Second)
+	return loaders.NewFetchLoader(source, config)
 }

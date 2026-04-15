@@ -5,28 +5,30 @@ import "encoding/json"
 
 // Config holds global configuration for graph execution
 type Config struct {
-	LLMModel     string
-	LLMAPIKey    string
-	Temperature  float64
-	MaxTokens    int
-	Verbose      bool
-	HTMLMaxChars int
-	ChunkSize    int
-	ChunkOverlap int
-	Headless     bool // use headless browser (Rod) instead of HTTP for fetching
+	LLMModel      string
+	LLMAPIKey     string
+	Temperature   float64
+	MaxTokens     int
+	Verbose       bool
+	HTMLMaxChars  int
+	ChunkSize     int
+	ChunkOverlap  int
+	Headless      bool   // use headless browser (Rod) instead of HTTP for fetching
+	FetchStrategy string // "utls", "rod", or "auto"; empty preserves Headless-based behavior
 }
 
 // DefaultConfig returns sensible defaults
 func DefaultConfig() *Config {
 	return &Config{
-		LLMModel:     "gpt-4o",
-		Temperature:  0,
-		MaxTokens:    4000,
-		Verbose:      false,
-		HTMLMaxChars: 50000,
-		ChunkSize:    8000,
-		ChunkOverlap: 200,
-		Headless:     false, // default to UTLS HTTP fetching
+		LLMModel:      "gpt-4o",
+		Temperature:   0,
+		MaxTokens:     4000,
+		Verbose:       false,
+		HTMLMaxChars:  50000,
+		ChunkSize:     8000,
+		ChunkOverlap:  200,
+		Headless:      false, // default to UTLS HTTP fetching
+		FetchStrategy: "",
 	}
 }
 
