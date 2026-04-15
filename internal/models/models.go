@@ -7,6 +7,7 @@ import "encoding/json"
 type Config struct {
 	LLMModel     string
 	LLMAPIKey    string
+	LLMBaseURL   string
 	Temperature  float64
 	MaxTokens    int
 	Verbose      bool

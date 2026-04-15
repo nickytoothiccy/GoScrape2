@@ -31,7 +31,11 @@ type OpenAIClient struct {
 
 // NewOpenAIClient creates a new OpenAI client
 func NewOpenAIClient(apiKey string, config *models.Config) *OpenAIClient {
-	client := openai.NewClient(option.WithAPIKey(apiKey))
+	opts := []option.RequestOption{option.WithAPIKey(apiKey)}
+	if config != nil && strings.TrimSpace(config.LLMBaseURL) != "" {
+		opts = append(opts, option.WithBaseURL(strings.TrimSpace(config.LLMBaseURL)))
+	}
+	client := openai.NewClient(opts...)
 	return &OpenAIClient{
 		client: client,
 		config: config,

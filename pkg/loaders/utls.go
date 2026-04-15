@@ -13,7 +13,6 @@ import (
 	"time"
 
 	utls "github.com/refraction-networking/utls"
-	"golang.org/x/net/http2"
 
 	"stealthfetch/internal/models"
 )
@@ -41,7 +40,6 @@ var profiles = map[string]BrowserProfile{
 			{"sec-fetch-mode", "navigate"},
 			{"sec-fetch-user", "?1"},
 			{"sec-fetch-dest", "document"},
-			{"accept-encoding", "gzip, deflate, br"},
 			{"accept-language", "en-US,en;q=0.9"},
 		},
 	},
@@ -52,7 +50,6 @@ var profiles = map[string]BrowserProfile{
 		Headers: [][2]string{
 			{"accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"},
 			{"accept-language", "en-US,en;q=0.5"},
-			{"accept-encoding", "gzip, deflate, br"},
 			{"upgrade-insecure-requests", "1"},
 			{"sec-fetch-dest", "document"},
 			{"sec-fetch-mode", "navigate"},
@@ -112,6 +109,9 @@ func (l *UTLSLoader) Load(ctx context.Context, source string) (*models.FetchResu
 
 	resp, err := client.Do(req)
 	if err != nil {
+		if shouldFallbackHTTP(err) {
+			return l.loadWithStandardTransport(ctx, source, profile, start)
+		}
 		return nil, fmt.Errorf("fetch: %w", err)
 	}
 	defer resp.Body.Close()
@@ -134,6 +134,53 @@ func (l *UTLSLoader) Load(ctx context.Context, source string) (*models.FetchResu
 		ElapsedSecs: time.Since(start).Seconds(),
 		Error:       nil,
 	}, nil
+}
+
+func (l *UTLSLoader) loadWithStandardTransport(ctx context.Context, source string, profile BrowserProfile, start time.Time) (*models.FetchResult, error) {
+	client := &http.Client{
+		Timeout: l.timeout,
+	}
+
+	req, err := http.NewRequestWithContext(ctx, "GET", source, nil)
+	if err != nil {
+		return nil, fmt.Errorf("create fallback request: %w", err)
+	}
+
+	req.Header.Set("User-Agent", profile.UserAgent)
+	for _, h := range profile.Headers {
+		req.Header.Set(h[0], h[1])
+	}
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("fetch: %w", err)
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("read body: %w", err)
+	}
+
+	headers := make(map[string]string)
+	for k := range resp.Header {
+		headers[strings.ToLower(k)] = resp.Header.Get(k)
+	}
+
+	return &models.FetchResult{
+		HTML:        string(body),
+		URL:         source,
+		StatusCode:  resp.StatusCode,
+		Headers:     headers,
+		ElapsedSecs: time.Since(start).Seconds(),
+		Error:       nil,
+	}, nil
+}
+
+func shouldFallbackHTTP(err error) bool {
+	msg := strings.ToLower(err.Error())
+	return strings.Contains(msg, "http/1.x transport connection broken") ||
+		strings.Contains(msg, "malformed http response")
 }
 
 func (l *UTLSLoader) pickProfile() BrowserProfile {
@@ -160,7 +207,6 @@ func (l *UTLSLoader) buildTransport(profile BrowserProfile) *http.Transport {
 		}
 	}
 
-	http2.ConfigureTransport(t)
 	return t
 }
 
@@ -179,6 +225,7 @@ func utlsDialTLS(ctx context.Context, network, addr string, clientHello *utls.Cl
 	tlsConn := utls.UClient(rawConn, &utls.Config{
 		ServerName:         host,
 		InsecureSkipVerify: false,
+		NextProtos:         []string{"http/1.1"},
 	}, *clientHello)
 
 	if err := tlsConn.HandshakeContext(ctx); err != nil {

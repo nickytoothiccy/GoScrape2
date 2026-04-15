@@ -18,7 +18,6 @@ import (
 	"github.com/openai/openai-go/v3/option"
 	utls "github.com/refraction-networking/utls"
 	"golang.org/x/net/html"
-	"golang.org/x/net/http2"
 )
 
 // ==================== MODELS ====================
@@ -105,7 +104,6 @@ var profiles = map[string]BrowserProfile{
 			{"sec-fetch-mode", "navigate"},
 			{"sec-fetch-user", "?1"},
 			{"sec-fetch-dest", "document"},
-			{"accept-encoding", "gzip, deflate, br"},
 			{"accept-language", "en-US,en;q=0.9"},
 		},
 	},
@@ -116,7 +114,6 @@ var profiles = map[string]BrowserProfile{
 		Headers: [][2]string{
 			{"accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8"},
 			{"accept-language", "en-US,en;q=0.5"},
-			{"accept-encoding", "gzip, deflate, br"},
 			{"upgrade-insecure-requests", "1"},
 			{"sec-fetch-dest", "document"},
 			{"sec-fetch-mode", "navigate"},
@@ -131,7 +128,6 @@ var profiles = map[string]BrowserProfile{
 		Headers: [][2]string{
 			{"accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"},
 			{"accept-language", "en-US,en;q=0.9"},
-			{"accept-encoding", "gzip, deflate, br"},
 		},
 	},
 }
@@ -165,6 +161,7 @@ func utlsDialTLS(ctx context.Context, network, addr string, clientHello *utls.Cl
 	tlsConn := utls.UClient(rawConn, &utls.Config{
 		ServerName:         host,
 		InsecureSkipVerify: false,
+		NextProtos:         []string{"http/1.1"},
 	}, *clientHello)
 
 	if err := tlsConn.HandshakeContext(ctx); err != nil {
@@ -187,10 +184,6 @@ func buildTransport(profile BrowserProfile, proxyURL string) *http.Transport {
 		if u, err := url.Parse(proxyURL); err == nil {
 			t.Proxy = http.ProxyURL(u)
 		}
-	}
-
-	if err := http2.ConfigureTransport(t); err != nil {
-		log.Printf("warn: http2 configure failed: %v", err)
 	}
 
 	return t

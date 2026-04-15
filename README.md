@@ -152,6 +152,35 @@ config := &models.Config{
 - `POST /depth-search` - Recursive crawl + merge
 - `GET /health` - Health check
 
+## Hermes Skill Mode
+
+This branch also supports running `GoScrape2` as a Hermes-internal skill helper instead of as an HTTP service.
+
+Entry points:
+
+- Go CLI: `cmd/hermes-skill`
+- Skill bundle: `skills/hermes-goscrape2`
+
+The Hermes path is intentionally local-only:
+
+- no sidecar service
+- no extra container
+- no separate daemon
+
+The skill wrapper builds and invokes the local Go binary directly and reads secrets from:
+
+- `HERMES_HOME/.env`
+- `HERMES_HOME/config.yaml`
+
+Example:
+
+```bash
+export HERMES_HOME="$HOME/.hermes"
+./skills/hermes-goscrape2/scripts/hermes_goscrape2.sh scrape \
+  --url https://example.com \
+  --prompt "Extract the main heading as JSON"
+```
+
 ### Next Steps
 
 - [x] Add Rod browser loader for JS-heavy sites
