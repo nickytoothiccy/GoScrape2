@@ -1,9 +1,32 @@
 # Active Context
 
 ## Current State
-GoScrape2 has completed another meaningful implementation slice and is now approximately **~36% complete** compared to full ScrapeGraphAI.
+GoScrape2 has completed another meaningful implementation slice and is now approximately **~43% complete** compared to full ScrapeGraphAI.
 
 ## What Was Built This Session
+
+### 30. SmartScraperLiteGraph Parity Slice (`pkg/scrapegraph/smartscraper_lite.go`)
+- Added `SmartScraperLiteGraph` as the canonical lightweight single-page extraction graph
+- Reused the standard fetch → parse → extract workflow while applying lite-oriented defaults for HTML size and chunk size
+- Added focused graph tests covering default config shaping and deterministic local-HTML execution with a stub LLM
+- Added runnable example under `examples/smartscraper_lite/`
+- **Impact:** graph parity moved forward with the expected lightweight variant of the core SmartScraper workflow, using a dedicated public graph rather than an internal-only configuration tweak
+
+## What Was Built This Session
+
+### 29. SearchLinkGraph Parity Slice (`pkg/scrapegraph/search_link.go`)
+- Added `SearchLinkGraph` as a dedicated high-level graph for fetch → link discovery workflows
+- Reused the existing `SearchLinkNode` with graph-level loader selection for local HTML, UTLS, or Rod fetching
+- Added focused graph tests for deterministic link extraction and relative-link resolution
+- Added runnable example under `examples/search_link/`
+- **Impact:** parity moved forward by exposing an existing internal link-discovery primitive as a canonical user-facing graph
+
+### 28. Markdownify Parity Slice (`pkg/markdown/markdown.go`, `pkg/nodes/markdownify.go`, `pkg/scrapegraph/markdownify.go`)
+- Added lightweight HTML→Markdown conversion support alongside the existing HTML→text utility
+- Added `MarkdownifyNode` as a canonical transformation node that reads `html` and writes `markdown`
+- Added `MarkdownifyGraph` as a dedicated high-level graph for converting a page or local HTML snippet directly into Markdown output
+- Added focused node/graph tests plus a runnable example under `examples/markdownify/`
+- **Impact:** parity moved forward on both the missing node inventory and missing graph inventory using a native ScrapeGraphAI-style slice rather than more orchestration-only work
 
 ### 26. Structured-Data Graph Parity Slice (`pkg/loaders/structured_data*.go`, `pkg/scrapegraph/*_scraper.go`)
 - Added canonical parity-oriented loaders for local/directory-based `JSON`, `XML`, and `CSV` sources
@@ -245,6 +268,7 @@ GoScrape2 has completed another meaningful implementation slice and is now appro
 - Next likely step: add more parity-native graph families such as structured-data multi variants, screenshot/lite/search-link graphs, or Markdownify-related functionality
 - Near-term quality task: rerun the Hermes balanced profile and compare pages used/output quality before deciding whether to increase depth further or relax link filtering
 - Near-term maintenance task: keep memory-bank priorities aligned with parity-first implementation order
+- Next likely step after SmartScraperLiteGraph: begin screenshot parity groundwork with `FetchScreenNode` and `ScreenshotScraperGraph`, then continue with other parity-native lightweight/multi variants
 
 ## What Was Built This Session
 

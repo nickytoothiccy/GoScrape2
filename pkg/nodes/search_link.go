@@ -61,7 +61,10 @@ func (n *SearchLinkNode) Execute(ctx context.Context, state *graph.State) error 
 	}
 
 	// Get the base URL for resolving relative links
-	baseURL, _ := state.GetString("url")
+	baseURL, _ := state.GetString("base_url")
+	if baseURL == "" {
+		baseURL, _ = state.GetString("url")
+	}
 
 	// Extract all links from HTML
 	allLinks := extractLinks(rawHTML, baseURL)

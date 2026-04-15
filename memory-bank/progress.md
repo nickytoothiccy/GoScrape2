@@ -11,7 +11,7 @@
   - BranchNode interface for conditional execution
   - Name-based node lookup (nodeMap)
   - **NEW: MaxIterations loop protection (100 iteration limit)**
-- ✅ Basic node implementations (9/30)
+- ✅ Basic node implementations (10/30)
   - FetchNode (multi-backend support)
   - ParseNode (HTML→text, chunking)
   - GenerateAnswerNode (single + map-reduce)
@@ -21,6 +21,7 @@
   - SearchInternetNode (LLM query + web search)
   - **NEW: GraphIteratorNode (sub-graph execution per item)**
   - **NEW: SearchLinkNode (HTML link extraction + LLM relevance filtering)**
+  - **NEW: MarkdownifyNode (HTML→Markdown transformation)**
 - ✅ Loader system (4/4)
   - Local HTML passthrough
   - UTLS TLS fingerprinting
@@ -39,13 +40,16 @@
 - ✅ **NEW: JSONScraperGraph** (6/26 graphs)
 - ✅ **NEW: XMLScraperGraph** (7/26 graphs)
 - ✅ **NEW: CSVScraperGraph** (8/26 graphs)
+- ✅ **NEW: MarkdownifyGraph** (9/26 graphs)
+- ✅ **NEW: SearchLinkGraph** (10/26 graphs)
+- ✅ **NEW: SmartScraperLiteGraph** (11/26 graphs)
 - ✅ **NEW: ResearchGraph** (high-level orchestration entrypoint over existing workflows)
 - ✅ LLM interface abstraction (`pkg/llm/interface.go`)
 - ✅ HTTP server wrapper
 	- `/scrape`, `/document-scrape`, `/multi-scrape`, `/search`, `/depth-search`, `/fetch`, `/health` endpoints
 - ✅ Hermes docs identified and wired as a real-world scrape target example
 
-## Phase 2: Complete Node Library (9/30 = 30%)
+## Phase 2: Complete Node Library (10/30 = 33%)
 
 **Completed:**
 - [x] FetchNode ✅
@@ -63,7 +67,7 @@
 - [ ] FetchScreenNode (screenshots)
 - [ ] RobotsNode (robots.txt)
 - [ ] ParseNodeDepthK (depth-aware parsing)
-- [ ] MarkdownifyNode (HTML→MD)
+- [x] MarkdownifyNode (HTML→MD)
 - [ ] HTMLAnalyzerNode (structure analysis)
 - [ ] GenerateAnswerNodeKLevel
 - [x] GenerateAnswerCSVNode ✅ (initial parity version; currently reuses standard extraction flow)
@@ -81,20 +85,21 @@
 - [ ] DescriptionNode
 - [ ] SearchNodeWithContext
 
-## Phase 3: All Graph Types (8/26 = 31%)
+## Phase 3: All Graph Types (11/26 = 42%)
 
 **Single-Page Extraction:**
 - ✅ SmartScraperGraph (with retry logic + Rod/UTLS)
-- [ ] SmartScraperLiteGraph
+- ✅ SmartScraperLiteGraph
 - ✅ **DocumentScraperGraph**
 - [ ] ScreenshotScraperGraph
 - ✅ **JSONScraperGraph**
 - ✅ **XMLScraperGraph**
+- ✅ **MarkdownifyGraph**
 
 **Search & Discovery:**
 - ✅ SearchGraph (timeout support, per-URL limits)
 - ✅ **DepthSearchGraph** (recursive link following, LLM link filtering)
-- [ ] SearchLinkGraph
+- ✅ **SearchLinkGraph**
 - [ ] OmniSearchGraph
 
 **Structured Data:**
@@ -144,7 +149,7 @@
 - [ ] Vision model support
 - [ ] Speech synthesis
 
-## Overall Completion: ~36%
+## Overall Completion: ~43%
 
 **What's Working:**
 - SmartScraperGraph with retry + Rod headless browser support
@@ -181,11 +186,15 @@
 - Real PDF extraction support
 - Real DOCX extraction support
 - Structured-data loaders for JSON/XML/CSV files and directories
+- MarkdownifyGraph for direct HTML/page → Markdown conversion
+- MarkdownifyNode for reusable HTML→Markdown state transformation
+- SearchLinkGraph for fetch-first link discovery and relevance filtering
+- SmartScraperLiteGraph for lighter-weight single-page extraction with reduced HTML/chunk defaults
 
 **What's Missing:**
 - 68% of the library
 - 21 more node types
-- 18 more graph types
+- 17 more graph types
 - 9 model providers
 - Telemetry
  - Additional document graph variants and richer document processing
@@ -195,17 +204,15 @@
 ## Next Priority Tasks
 
 **Immediate (Week 3):**
-1. Add more canonical graph types (structured-data multi variants, screenshot/lite/search-link families)
+1. Add more canonical graph types (screenshot and structured-data multi families)
 2. Add broader graph smoke tests / examples coverage
 3. Consider fixing the `examples/` package layout so `go test ./...` passes cleanly
 4. Expand telemetry beyond timing into metrics/tracing aggregation
 5. Rerun Hermes with the balanced crawl profile only as a quality-validation task, not as a product-scope driver
 
 **Short-term (Week 4):**
-1. Implement MarkdownifyNode and MarkdownifyGraph
-2. Implement SearchLinkGraph
-3. Implement SmartScraperLiteGraph and multi variants
-4. Continue remaining parity-native graph/node work before new provider expansion
+1. Implement screenshot parity slice, then continue multi variants
+2. Continue remaining parity-native graph/node work before new provider expansion
 
 ## Blockers
 None — all infrastructure is in place.
