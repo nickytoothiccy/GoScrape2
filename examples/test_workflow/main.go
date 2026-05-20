@@ -1,4 +1,4 @@
-// Test the full SmartScraperGraph workflow
+// Package main runs a basic SmartScraperGraph workflow test.
 package main
 
 import (
@@ -18,11 +18,9 @@ func main() {
 		log.Fatal("OPENAI_API_KEY env var required")
 	}
 
-	// Test 1: Local HTML
 	fmt.Println("=== Test 1: Local HTML ===")
 	testLocalHTML(apiKey)
 
-	// Test 2: Live URL
 	fmt.Println("\n=== Test 2: Live URL ===")
 	testLiveURL(apiKey)
 }

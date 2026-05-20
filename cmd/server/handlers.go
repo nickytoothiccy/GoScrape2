@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -142,6 +143,52 @@ func (s *Server) handleFetch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, status, map[string]interface{}{"status": result.StatusCode, "headers": result.Headers, "body": result.HTML, "elapsed": result.ElapsedSecs})
+}
+
+func (s *Server) handleScreenshot(w http.ResponseWriter, r *http.Request) {
+	start := telemetry.Start()
+	status := http.StatusOK
+	var loggedErr error
+	defer func() { telemetry.LogHTTP(r, status, start, "screenshot", loggedErr) }()
+	if r.Method != http.MethodPost {
+		status = http.StatusMethodNotAllowed
+		loggedErr = fmt.Errorf("POST only")
+		writeError(w, status, loggedErr.Error())
+		return
+	}
+	var req ScreenshotRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		status = http.StatusBadRequest
+		loggedErr = err
+		writeError(w, status, err.Error())
+		return
+	}
+	if req.URL == "" {
+		status = http.StatusBadRequest
+		loggedErr = fmt.Errorf("url is required")
+		writeError(w, status, loggedErr.Error())
+		return
+	}
+
+	cfg := *s.config
+	cfg.Headless = true
+	if req.WaitSecs > 0 {
+		cfg.ScreenshotWaitSecs = req.WaitSecs
+	}
+	loader := loaders.NewScreenshotLoader(&cfg)
+	result, err := loader.Capture(r.Context(), req.URL)
+	if err != nil {
+		status = http.StatusBadGateway
+		loggedErr = err
+		writeError(w, status, err.Error())
+		return
+	}
+	writeJSON(w, status, ScreenshotResponse{
+		URL:              req.URL,
+		ScreenshotBase64: base64.StdEncoding.EncodeToString(result.PNG),
+		ElapsedSecs:      result.ElapsedSecs,
+		Loader:           loader.Name(),
+	})
 }
 
 func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {

@@ -93,6 +93,19 @@ type FetchRequest struct {
 	Headless bool   `json:"headless,omitempty"`
 }
 
+type ScreenshotRequest struct {
+	URL      string `json:"url"`
+	Model    string `json:"model,omitempty"`
+	WaitSecs int    `json:"wait_secs,omitempty"`
+}
+
+type ScreenshotResponse struct {
+	URL              string  `json:"url"`
+	ScreenshotBase64 string  `json:"screenshot_base64"`
+	ElapsedSecs      float64 `json:"elapsed_secs"`
+	Loader           string  `json:"loader"`
+}
+
 type ErrorResponse struct {
 	Error string `json:"error"`
 }

@@ -38,3 +38,16 @@ func resolveFetchStrategy(config *models.Config) string {
 	}
 	return "utls"
 }
+
+// NewScreenshotLoader chooses the screenshot backend.
+func NewScreenshotLoader(config *models.Config) ScreenshotLoader {
+	if config == nil {
+		config = models.DefaultConfig()
+	}
+	return NewRodLoader(RodConfig{
+		Headless: true,
+		WaitSecs: config.ScreenshotWaitSecs,
+		Timeout:  30 * time.Second,
+		Verbose:  config.Verbose,
+	})
+}

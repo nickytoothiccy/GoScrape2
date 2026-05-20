@@ -77,6 +77,8 @@ func (l *RodLoader) Load(ctx context.Context, source string) (*models.FetchResul
 		Bin(path).
 		Leakless(false). // avoid Windows Defender blocking leakless.exe
 		Headless(l.headless).
+		Set("no-sandbox").
+		Set("disable-dev-shm-usage").
 		Set("disable-blink-features", "AutomationControlled").
 		Set("no-first-run").
 		Set("no-default-browser-check").
@@ -84,13 +86,14 @@ func (l *RodLoader) Load(ctx context.Context, source string) (*models.FetchResul
 		MustLaunch()
 
 	browser := rod.New().ControlURL(u).MustConnect()
-	defer browser.MustClose()
-
-	browser = browser.Timeout(l.timeout)
+	defer func() { _ = browser.Close() }()
+	runCtx, cancel := context.WithTimeout(ctx, l.timeout)
+	defer cancel()
+	browser = browser.Context(runCtx)
 
 	// Create stealth page
 	page := stealth.MustPage(browser)
-	defer page.MustClose()
+	defer func() { _ = page.Close() }()
 
 	// Navigate
 	if err := page.Navigate(source); err != nil {
@@ -103,7 +106,9 @@ func (l *RodLoader) Load(ctx context.Context, source string) (*models.FetchResul
 	}
 
 	// Extra wait for dynamic content
-	time.Sleep(time.Duration(l.waitSecs) * time.Second)
+	if err := sleepWithContext(runCtx, time.Duration(l.waitSecs)*time.Second); err != nil {
+		return l.errorResult(source, start, err), nil
+	}
 
 	// Check for Cloudflare challenge and wait if needed
 	l.handleCloudflare(page, source)

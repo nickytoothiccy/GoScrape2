@@ -5,30 +5,32 @@ import "encoding/json"
 
 // Config holds global configuration for graph execution
 type Config struct {
-	LLMModel      string
-	LLMAPIKey     string
-	Temperature   float64
-	MaxTokens     int
-	Verbose       bool
-	HTMLMaxChars  int
-	ChunkSize     int
-	ChunkOverlap  int
-	Headless      bool   // use headless browser (Rod) instead of HTTP for fetching
-	FetchStrategy string // "utls", "rod", or "auto"; empty preserves Headless-based behavior
+	LLMModel           string
+	LLMAPIKey          string
+	Temperature        float64
+	MaxTokens          int
+	Verbose            bool
+	HTMLMaxChars       int
+	ChunkSize          int
+	ChunkOverlap       int
+	Headless           bool   // use headless browser (Rod) instead of HTTP for fetching
+	FetchStrategy      string // "utls", "rod", or "auto"; empty preserves Headless-based behavior
+	ScreenshotWaitSecs int
 }
 
 // DefaultConfig returns sensible defaults
 func DefaultConfig() *Config {
 	return &Config{
-		LLMModel:      "gpt-4o",
-		Temperature:   0,
-		MaxTokens:     4000,
-		Verbose:       false,
-		HTMLMaxChars:  50000,
-		ChunkSize:     8000,
-		ChunkOverlap:  200,
-		Headless:      false, // default to UTLS HTTP fetching
-		FetchStrategy: "",
+		LLMModel:           "gpt-4o",
+		Temperature:        0,
+		MaxTokens:          4000,
+		Verbose:            false,
+		HTMLMaxChars:       50000,
+		ChunkSize:          8000,
+		ChunkOverlap:       200,
+		Headless:           false, // default to UTLS HTTP fetching
+		FetchStrategy:      "",
+		ScreenshotWaitSecs: 2,
 	}
 }
 
@@ -38,6 +40,14 @@ type FetchResult struct {
 	URL         string
 	StatusCode  int
 	Headers     map[string]string
+	ElapsedSecs float64
+	Error       error
+}
+
+// ScreenshotResult contains the result of a screenshot operation.
+type ScreenshotResult struct {
+	PNG         []byte
+	URL         string
 	ElapsedSecs float64
 	Error       error
 }

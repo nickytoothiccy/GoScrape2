@@ -11,7 +11,7 @@
   - BranchNode interface for conditional execution
   - Name-based node lookup (nodeMap)
   - **NEW: MaxIterations loop protection (100 iteration limit)**
-- ✅ Basic node implementations (10/30)
+- ✅ Basic node implementations (11/30)
   - FetchNode (multi-backend support)
   - ParseNode (HTML→text, chunking)
   - GenerateAnswerNode (single + map-reduce)
@@ -22,6 +22,7 @@
   - **NEW: GraphIteratorNode (sub-graph execution per item)**
   - **NEW: SearchLinkNode (HTML link extraction + LLM relevance filtering)**
   - **NEW: MarkdownifyNode (HTML→Markdown transformation)**
+  - **NEW: FetchScreenNode (URL screenshot capture + base64 output)**
 - ✅ Loader system (4/4)
   - Local HTML passthrough
   - UTLS TLS fingerprinting
@@ -50,7 +51,7 @@
 	- `/scrape`, `/document-scrape`, `/multi-scrape`, `/search`, `/depth-search`, `/fetch`, `/health` endpoints
 - ✅ Hermes docs identified and wired as a real-world scrape target example
 
-## Phase 2: Complete Node Library (10/30 = 33%)
+## Phase 2: Complete Node Library (11/30 = 37%)
 
 **Completed:**
 - [x] FetchNode ✅
@@ -65,7 +66,7 @@
 
 **Not Started:**
 - [ ] FetchNodeLevelK (depth-aware)
-- [ ] FetchScreenNode (screenshots)
+- [x] FetchScreenNode (screenshots) ✅
 - [ ] RobotsNode (robots.txt)
 - [ ] ParseNodeDepthK (depth-aware parsing)
 - [x] MarkdownifyNode (HTML→MD)
@@ -141,17 +142,17 @@
 - ✅ **Telemetry basics** (HTTP structured logging + timing)
 - ✅ **Graph/node timing telemetry baseline**
 - ✅ **Document loaders (PDF, DOCX)**
+- ✅ **Screenshot capture baseline** (`ScreenshotLoader`, `FetchScreenNode`, `/screenshot` endpoint)
 
 **Not Started:**
  - [ ] Telemetry (metrics, tracing, richer aggregation)
-- [ ] Screenshot capture
 - [ ] Rate limiting
 - [ ] Caching layer
 - [ ] Streaming responses
 - [ ] Vision model support
 - [ ] Speech synthesis
 
-## Overall Completion: ~44%
+## Overall Completion: ~45%
 
 **What's Working:**
 - SmartScraperGraph with retry + Rod headless browser support
@@ -186,6 +187,7 @@
 - HTML→text conversion
 - OpenAI extraction (gpt-4o/gpt-4o-mini)
 - HTTP API (scrape, search, depth-search, fetch, health)
+- HTTP `/screenshot` endpoint for screenshot capture workflows
 - HTTP timing/structured logs for endpoint telemetry
 - Graph/node timing logs for execution telemetry
 - Real PDF extraction support
@@ -195,10 +197,11 @@
 - MarkdownifyNode for reusable HTML→Markdown state transformation
 - SearchLinkGraph for fetch-first link discovery and relevance filtering
 - SmartScraperLiteGraph for lighter-weight single-page extraction with reduced HTML/chunk defaults
+- Repo-local Go toolchain scripts (`scripts/setup-local-go.sh`, `scripts/use-local-go.sh`) with local `.dev-env` caches for cross-machine portability
 
 **What's Missing:**
 - 68% of the library
-- 21 more node types
+- 20 more node types
 - 17 more graph types
 - 9 model providers
 - Telemetry
@@ -206,18 +209,19 @@
 - Better extraction quality tuning for large-site crawls, including testing with stronger models before judging final scrape quality
 - Validation rerun of the new Hermes balanced crawl profile to measure whether broader link frontier improves result quality materially
 - Proxy rotation, cookie/session persistence, and richer anti-bot escalation policies beyond the current UTLS→Rod fallback
+- Host/runtime-specific Rod navigation instability on this Debian ARM environment (timeouts despite passing tests; currently fails gracefully without panic)
 
 ## Next Priority Tasks
 
 **Immediate (Week 3):**
-1. Add more canonical graph types (screenshot and structured-data multi families)
+1. Add screenshot graph parity (`ScreenshotScraperGraph`) on top of `FetchScreenNode`
 2. Add broader graph smoke tests / examples coverage
-3. Consider fixing the `examples/` package layout so `go test ./...` passes cleanly
-4. Expand telemetry beyond timing into metrics/tracing aggregation
+3. Expand telemetry beyond timing into metrics/tracing aggregation
+4. Investigate/resolve Rod live navigation timeout behavior on Debian ARM host runtime
 5. Rerun Hermes with the balanced crawl profile only as a quality-validation task, not as a product-scope driver
 
 **Short-term (Week 4):**
-1. Implement screenshot parity slice, then continue multi variants
+1. Continue structured-data multi graph variants after screenshot graph lands
 2. Continue remaining parity-native graph/node work before new provider expansion
 
 ## Blockers

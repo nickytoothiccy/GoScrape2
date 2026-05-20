@@ -10,6 +10,7 @@ func newMux(srv *Server) *http.ServeMux {
 	mux.HandleFunc("/search", srv.handleSearch)
 	mux.HandleFunc("/depth-search", srv.handleDepthSearch)
 	mux.HandleFunc("/fetch", srv.handleFetch)
+	mux.HandleFunc("/screenshot", srv.handleScreenshot)
 	mux.HandleFunc("/health", srv.handleHealth)
 	return mux
 }

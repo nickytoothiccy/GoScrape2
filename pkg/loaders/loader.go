@@ -15,3 +15,12 @@ type Loader interface {
 	// Name returns the loader's identifier
 	Name() string
 }
+
+// ScreenshotLoader is the interface for screenshot-capable backends.
+type ScreenshotLoader interface {
+	// Capture renders and captures a PNG screenshot from the source URL.
+	Capture(ctx context.Context, source string) (*models.ScreenshotResult, error)
+
+	// Name returns the loader's identifier.
+	Name() string
+}

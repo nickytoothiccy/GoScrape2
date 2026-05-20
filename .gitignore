@@ -36,3 +36,6 @@ Desktop.ini
 # Editor directories
 .idea/
 .vscode/
+
+# Repo-local toolchain/runtime caches
+.dev-env/

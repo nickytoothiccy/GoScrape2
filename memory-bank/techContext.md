@@ -6,10 +6,30 @@
 - Shell: PowerShell (pwsh)
 - Note: Use `;` instead of `&&` for command chaining
 
+## Current Validation Host (2026-05-19)
+- OS: Debian 12 (bookworm), ARM64 (`aarch64`)
+- Repo path: `/home/admin/GoScrape2`
+- Chromium paths:
+  - wrapper: `/usr/bin/chromium`
+  - binary: `/usr/lib/chromium/chromium`
+- Added repo-local Go toolchain workflow (not shared with harness):
+  - install: `scripts/setup-local-go.sh 1.24.1`
+  - activate: `source scripts/use-local-go.sh`
+  - local caches/toolchain live under `.dev-env/`
+- Local Go validation passed:
+  - `go version go1.24.1 linux/arm64`
+  - `go test ./... -count=1`
+
 ## Go Setup
 - Go version: 1.22
 - Module: `stealthfetch`
 - Primary development: Library first, HTTP API secondary
+
+## Current Go Setup (Repo-Local)
+- `go.mod` target: `go 1.24.1`
+- Local toolchain installed: `.dev-env/go/1.24.1`
+- Active symlink: `.dev-env/go/current`
+- `GOPATH`, `GOMODCACHE`, `GOCACHE` are repo-scoped via `scripts/use-local-go.sh`
 
 ## Current Dependencies
 
@@ -105,7 +125,7 @@ stealthfetch/
 ├── pkg/
 │   ├── graph/          # Core engine ✅ (loop protection, branching)
 	│   ├── scrapegraph/    # graph workflows incl. SmartScraper, Search, DepthSearch, lite/search-link/markdown variants
-│   ├── nodes/          # 9/30 nodes done
+│   ├── nodes/          # 11/30 nodes done
 │   ├── llm/            # LLM providers (1/10 done, interface ready)
 	│   ├── loaders/        # Fetch backends + detection/factory/escalation helpers
 │   ├── prompts/        # Template system ✅
@@ -114,7 +134,7 @@ stealthfetch/
 │   ├── markdown/       # HTML conversion ✅
 │   └── utils/          # Search utilities ✅
 ├── cmd/
-│   └── server/         # HTTP API ✅ (5 endpoints)
+│   └── server/         # HTTP API ✅ (8 endpoints)
 ├── examples/           # Usage examples
 ├── tests/              # Test suite (0%)
 └── memory-bank/        # Project documentation ✅
@@ -213,6 +233,14 @@ scrapegraphai/
 - Every graph type has example usage
 - Examples double as smoke tests
 - Kept in `examples/` directory
+
+## Runtime Note: Rod on Debian ARM Host
+- Code-level tests pass for new screenshot functionality and full repo test suite
+- Live Chromium/Rod navigation currently times out in this host runtime (including localhost smoke)
+- Timeout paths were hardened to return errors without panic:
+  - `pkg/loaders/rod.go`
+  - `pkg/loaders/rod_screenshot.go`
+- Current interpretation: host/browser runtime behavior issue rather than compile/test regression
 
 ## Performance Considerations
 

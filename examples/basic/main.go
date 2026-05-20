@@ -1,4 +1,4 @@
-// Package main shows basic usage of the scrapegraph library
+// Package main shows basic usage of the scrapegraph library.
 package main
 
 import (
@@ -19,25 +19,23 @@ func main() {
 		log.Fatal("OPENAI_API_KEY env var required")
 	}
 
-	// Configure
 	config := models.DefaultConfig()
 	config.LLMAPIKey = apiKey
 	config.LLMModel = "gpt-4o-mini"
 	config.Verbose = true
 
-	// Create scraper
-	prompt := "Extract the main article title and first paragraph"
-	url := "https://news.ycombinator.com"
+	scraper := scrapegraph.NewSmartScraperGraph(
+		"Extract the main article title and first paragraph",
+		"https://news.ycombinator.com",
+		config,
+		"",
+	)
 
-	scraper := scrapegraph.NewSmartScraperGraph(prompt, url, config, "")
-
-	// Run
 	result, err := scraper.Run(context.Background())
 	if err != nil {
 		log.Fatalf("scrape failed: %v", err)
 	}
 
-	// Pretty print
 	var pretty bytes.Buffer
 	json.Indent(&pretty, result, "", "  ")
 	fmt.Println(pretty.String())

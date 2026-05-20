@@ -3,6 +3,47 @@
 ## Current State
 GoScrape2 has completed another meaningful implementation slice and is now approximately **~44% complete** compared to full ScrapeGraphAI.
 
+## What Was Built This Session (2026-05-19)
+
+### 32. Screenshot Parity Slice (Node + Loader + API)
+- Added `ScreenshotLoader` interface and Rod-backed screenshot capture path
+- Added `FetchScreenNode` with state outputs:
+  - `screenshot_png`
+  - `screenshot_base64`
+  - `screenshot_result`
+- Added `POST /screenshot` endpoint returning base64 PNG payload
+- Added runnable screenshot example under `examples/screenshot/`
+- **Impact:** screenshot capture now exists as a first-class node and HTTP capability, enabling downstream screenshot graph work
+
+### 33. Example Package/Test Hygiene Fix
+- Moved root-level example mains into dedicated folders:
+  - `examples/basic/main.go`
+  - `examples/test_workflow/main.go`
+- Removed conflicting root example files that caused duplicate `main` package issues during `go test ./...`
+- **Impact:** full repository tests can run cleanly without example-package collisions
+
+### 34. Repo-Local Go Toolchain (No Shared Harness Dependency)
+- Added `scripts/setup-local-go.sh` to install local Go under `.dev-env/go/<version>`
+- Added `scripts/use-local-go.sh` to activate local `GOROOT`, `GOPATH`, `GOMODCACHE`, and `GOCACHE`
+- Added `.dev-env/` to `.gitignore`
+- Installed and validated local Go `1.24.1` for this workspace
+- **Impact:** this repo can now be built/tested independently across machines without relying on external/shared Go installs
+
+### 35. Runtime Hardening for Rod Timeout Paths
+- Updated Rod fetch and screenshot paths to avoid `MustClose` panic behavior on timeout
+- Replaced panic-prone close flow with safe close patterns so timeout failures return errors instead of crashing
+- Added container-friendly Chromium launch flags (`no-sandbox`, `disable-dev-shm-usage`) in Rod launch path
+- **Impact:** Rod timeout behavior is now safer and diagnosable under constrained host environments
+
+### 36. Validation Results (2026-05-19)
+- Passed targeted tests:
+  - `go test ./pkg/nodes -run FetchScreen -count=1 -v`
+  - `go test ./pkg/loaders -run Screenshot -count=1 -v`
+  - `go test ./cmd/server -run Screenshot -count=1 -v`
+- Passed full test suite:
+  - `go test ./... -count=1`
+- **Observed host/runtime issue:** live Chromium navigation via Rod still times out in this Debian ARM host context (even localhost smoke), while failures now return clean errors (no panic). This appears environment/browser-runtime related rather than compile/test regression in new code.
+
 ## What Was Built This Session
 
 ### 31. Auto Fetch Strategy + Block-Aware Fallback (`internal/models/models.go`, `pkg/loaders/*.go`, `pkg/scrapegraph/*.go`)

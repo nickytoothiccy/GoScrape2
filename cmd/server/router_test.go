@@ -47,3 +47,22 @@ func TestDocumentScrapeValidatesBody(t *testing.T) {
 		t.Fatalf("expected 400, got %d body=%s", rr.Code, rr.Body.String())
 	}
 }
+
+func TestScreenshotRequiresPOST(t *testing.T) {
+	req := httptest.NewRequest(http.MethodGet, "/screenshot", nil)
+	rr := httptest.NewRecorder()
+	newMux(&Server{config: models.DefaultConfig()}).ServeHTTP(rr, req)
+	if rr.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("expected 405, got %d", rr.Code)
+	}
+}
+
+func TestScreenshotValidatesBody(t *testing.T) {
+	body, _ := json.Marshal(ScreenshotRequest{})
+	req := httptest.NewRequest(http.MethodPost, "/screenshot", bytes.NewReader(body))
+	rr := httptest.NewRecorder()
+	newMux(&Server{config: models.DefaultConfig()}).ServeHTTP(rr, req)
+	if rr.Code != http.StatusBadRequest {
+		t.Fatalf("expected 400, got %d body=%s", rr.Code, rr.Body.String())
+	}
+}
