@@ -30,7 +30,7 @@ func main() {
 
 	graph := scrapegraph.NewSmartScraperGraph(
 		"Extract the page title and description as JSON",
-		`<html><head><title>GoScrape2</title></head><body><p>A Go scraping graph library.</p></body></html>`,
+		`<html><body><h1>GoScrape2</h1><p>A Go scraping graph library.</p></body></html>`,
 		cfg,
 		`{"title":"string","description":"string"}`,
 	)
