@@ -38,7 +38,6 @@ func NewSmartScraperLiteGraph(prompt, source string, config *models.Config, sche
 		schemaHint: schemaHint,
 		source:     source,
 		loader:     chooseSmartScraperLoader(source, config),
-		llmClient:  llm.NewOpenAIClient(config.LLMAPIKey, config),
 	}
 }
 
@@ -47,10 +46,19 @@ func (s *SmartScraperLiteGraph) Run(ctx context.Context) (json.RawMessage, error
 	start := telemetry.Start()
 	var runErr error
 	defer func() { telemetry.LogGraph("smart_scraper_lite", start, runErr) }()
+	llmClient := s.llmClient
+	if llmClient == nil {
+		var err error
+		llmClient, err = llm.NewClient(s.config)
+		if err != nil {
+			runErr = fmt.Errorf("configure LLM: %w", err)
+			return nil, runErr
+		}
+	}
 	g := graph.NewGraph(s.config)
 	g.AddNode(nodes.NewFetchNode(s.loader, s.config))
 	g.AddNode(nodes.NewParseNode(s.config))
-	g.AddNode(nodes.NewGenerateAnswerNode(s.llmClient, s.prompt, s.schemaHint))
+	g.AddNode(nodes.NewGenerateAnswerNode(llmClient, s.prompt, s.schemaHint))
 	if err := g.AddEdge("fetch", "parse"); err != nil {
 		runErr = err
 		return nil, err

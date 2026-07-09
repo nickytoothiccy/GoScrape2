@@ -50,7 +50,7 @@ func (s *Server) handleScrape(w http.ResponseWriter, r *http.Request) {
 		writeError(w, status, err.Error())
 		return
 	}
-	writeJSON(w, status, ScrapeResponse{Result: result, Model: cfg.LLMModel, TotalTime: time.Since(start).Seconds()})
+	writeJSON(w, status, ScrapeResponse{Result: result, Model: cfg.LLMModel, Provider: cfg.LLMProvider, TotalTime: time.Since(start).Seconds()})
 }
 
 func (s *Server) handleMultiScrape(w http.ResponseWriter, r *http.Request) {
@@ -98,7 +98,7 @@ func (s *Server) handleMultiScrape(w http.ResponseWriter, r *http.Request) {
 		writeError(w, status, err.Error())
 		return
 	}
-	writeJSON(w, status, MultiScrapeResponse{Result: result, URLs: req.URLs, FailedURLs: multi.GetFailedURLs(), Model: cfg.LLMModel, TotalTime: time.Since(start).Seconds()})
+	writeJSON(w, status, MultiScrapeResponse{Result: result, URLs: req.URLs, FailedURLs: multi.GetFailedURLs(), Model: cfg.LLMModel, Provider: cfg.LLMProvider, TotalTime: time.Since(start).Seconds()})
 }
 
 func (s *Server) handleFetch(w http.ResponseWriter, r *http.Request) {
@@ -227,7 +227,7 @@ func (s *Server) handleSearch(w http.ResponseWriter, r *http.Request) {
 		writeError(w, status, err.Error())
 		return
 	}
-	writeJSON(w, status, SearchResponse{Result: result, URLs: sg.GetConsideredURLs(), Model: cfg.LLMModel, TotalTime: time.Since(start).Seconds()})
+	writeJSON(w, status, SearchResponse{Result: result, URLs: sg.GetConsideredURLs(), Model: cfg.LLMModel, Provider: cfg.LLMProvider, TotalTime: time.Since(start).Seconds()})
 }
 
 func (s *Server) handleDepthSearch(w http.ResponseWriter, r *http.Request) {
@@ -267,7 +267,7 @@ func (s *Server) handleDepthSearch(w http.ResponseWriter, r *http.Request) {
 		writeError(w, status, err.Error())
 		return
 	}
-	writeJSON(w, status, DepthSearchResponse{Result: result, VisitedURLs: dsg.GetVisitedURLs(), Model: cfg.LLMModel, TotalTime: time.Since(start).Seconds()})
+	writeJSON(w, status, DepthSearchResponse{Result: result, VisitedURLs: dsg.GetVisitedURLs(), Model: cfg.LLMModel, Provider: cfg.LLMProvider, TotalTime: time.Since(start).Seconds()})
 }
 
 func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {

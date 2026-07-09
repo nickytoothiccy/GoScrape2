@@ -21,7 +21,6 @@ type SearchLinkGraph struct {
 	maxLinks    int
 	filterByLLM bool
 	loader      loaders.Loader
-	llmClient   llm.LLM
 }
 
 // SearchLinkGraphConfig holds graph construction settings.
@@ -50,7 +49,6 @@ func NewSearchLinkGraph(cfg SearchLinkGraphConfig) *SearchLinkGraph {
 		maxLinks:    cfg.MaxLinks,
 		filterByLLM: cfg.FilterByLLM,
 		loader:      chooseSearchLinkLoader(cfg.Source, cfg.Config),
-		llmClient:   llm.NewOpenAIClient(cfg.Config.LLMAPIKey, cfg.Config),
 	}
 }
 
@@ -59,10 +57,17 @@ func (g *SearchLinkGraph) Run(ctx context.Context) ([]string, error) {
 	start := telemetry.Start()
 	var runErr error
 	defer func() { telemetry.LogGraph("search_link", start, runErr) }()
+	var llmClient llm.LLM
+	if g.filterByLLM {
+		llmClient, runErr = llm.NewClient(g.config)
+		if runErr != nil {
+			return nil, fmt.Errorf("configure LLM: %w", runErr)
+		}
+	}
 	workflow := graph.NewGraph(g.config)
 	workflow.AddNode(nodes.NewFetchNode(g.loader, g.config))
 	workflow.AddNode(nodes.NewSearchLinkNode(nodes.SearchLinkConfig{
-		LLMClient:   g.llmClient,
+		LLMClient:   llmClient,
 		Prompt:      g.prompt,
 		MaxLinks:    g.maxLinks,
 		FilterByLLM: g.filterByLLM,

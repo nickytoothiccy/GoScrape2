@@ -35,7 +35,11 @@ func (d *DocumentScraperGraph) Run(ctx context.Context) (json.RawMessage, error)
 	var runErr error
 	defer func() { telemetry.LogGraph("document_scraper", start, runErr) }()
 	g := graph.NewGraph(d.config)
-	llmClient := llm.NewOpenAIClient(d.config.LLMAPIKey, d.config)
+	llmClient, err := llm.NewClient(d.config)
+	if err != nil {
+		runErr = fmt.Errorf("configure LLM: %w", err)
+		return nil, runErr
+	}
 	fetchNode := nodes.NewFetchNode(loaders.NewDocumentLoader(), d.config)
 	parseNode := nodes.NewParseNode(d.config)
 	generateNode := nodes.NewGenerateAnswerNode(llmClient, d.prompt, d.schemaHint)

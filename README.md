@@ -11,7 +11,7 @@ pkg/
 ├── loaders/        # Fetch backends (UTLS, Local HTML)
 ├── chunking/       # Text splitting for LLM processing
 ├── markdown/       # HTML to text conversion
-├── llm/            # OpenAI client with extraction logic
+├── llm/            # OpenAI/OpenRouter clients and provider factory
 └── scrapegraph/    # High-level SmartScraperGraph API
 ```
 
@@ -21,6 +21,7 @@ pkg/
 - **Smart chunking**: Token-aware text splitting with map-reduce extraction
 - **Multi-backend fetching**: UTLS TLS fingerprinting, Rod browser, or local HTML
 - **Schema-aware extraction**: Structured JSON output with merge logic
+- **Multiple LLM providers**: OpenAI and OpenRouter through one provider factory
 - **Multi-page extraction**: Batch scrape multiple URLs with one workflow
 - **Modular design**: All files under 200 lines for maintainability
 
@@ -55,6 +56,21 @@ scraper := scrapegraph.NewSmartScraperGraph(
 
 result, err := scraper.Run(context.Background())
 ```
+
+**OpenRouter:**
+
+```go
+config := models.DefaultConfig()
+config.LLMProvider = "openrouter"
+config.LLMAPIKey = os.Getenv("OPENROUTER_API_KEY")
+config.LLMModel = "anthropic/claude-sonnet-4"
+config.LLMHTTPReferer = "https://your-app.example" // optional
+config.LLMAppTitle = "Your App"                    // optional
+```
+
+OpenRouter uses its OpenAI-compatible endpoint and strict JSON mode. Models that
+cannot satisfy JSON response formatting return a capability error rather than a
+prompt-only fallback.
 
 **Multi-URL extraction:**
 
@@ -92,8 +108,18 @@ go run ./examples/hermes_docs
 
 ```bash
 export OPENAI_API_KEY=your-key
-cd cmd/server
-go run main.go
+go run ./cmd/server
+```
+
+For OpenRouter:
+
+```bash
+export LLM_PROVIDER=openrouter
+export OPENROUTER_API_KEY=your-key
+export OPENROUTER_MODEL=anthropic/claude-sonnet-4
+export OPENROUTER_HTTP_REFERER=https://your-app.example # optional
+export OPENROUTER_APP_TITLE=GoScrape2                  # optional
+go run ./cmd/server
 ```
 
 ```bash
@@ -134,13 +160,15 @@ Each node:
 
 ```go
 config := &models.Config{
-    LLMModel:     "gpt-4o",           // OpenAI model
-    LLMAPIKey:    "sk-...",            // API key
-    Temperature:  0,                   // LLM temperature
-    HTMLMaxChars: 50000,               // Max HTML to process
-    ChunkSize:    8000,                // Chars per chunk
-    ChunkOverlap: 200,                 // Overlap between chunks
-    Verbose:      false,               // Debug logging
+	LLMProvider:  "openai",  // "openai" or "openrouter"
+	LLMModel:     "gpt-4o",
+	LLMAPIKey:    "sk-...",
+	LLMBaseURL:   "",        // optional compatible endpoint override
+	Temperature:  0,
+	HTMLMaxChars: 50000,
+	ChunkSize:    8000,
+	ChunkOverlap: 200,
+	Verbose:      false,
 }
 ```
 
@@ -150,6 +178,9 @@ config := &models.Config{
 - `POST /fetch` - Fetch only (returns raw HTML)
 - `POST /search` - Search + scrape + merge
 - `POST /depth-search` - Recursive crawl + merge
+- `POST /document-scrape` - Extract from local PDF/DOCX files
+- `POST /multi-scrape` - Extract from multiple URLs
+- `POST /screenshot` - Capture a rendered page as base64 PNG
 - `GET /health` - Health check
 
 ### Next Steps

@@ -39,6 +39,7 @@ func TestStructuredScraperRun_JSONLoader(t *testing.T) {
 		source:     path,
 		name:       "json_scraper",
 		loader:     loaders.NewJSONLoader(),
+		llmClient:  stubLLM{},
 		newGenNode: func(c llm.LLM, p, sh string) graph.Node { return nodes.NewGenerateAnswerNode(stubLLM{}, p, sh) },
 	}
 	result, err := s.run(context.Background())

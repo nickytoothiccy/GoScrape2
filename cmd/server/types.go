@@ -19,6 +19,7 @@ type ScrapeRequest struct {
 type ScrapeResponse struct {
 	Result    json.RawMessage `json:"result"`
 	Model     string          `json:"model_used"`
+	Provider  string          `json:"provider_used"`
 	TotalTime float64         `json:"total_time_s"`
 }
 
@@ -37,6 +38,7 @@ type MultiScrapeResponse struct {
 	URLs       []string        `json:"urls"`
 	FailedURLs []string        `json:"failed_urls,omitempty"`
 	Model      string          `json:"model_used"`
+	Provider   string          `json:"provider_used"`
 	TotalTime  float64         `json:"total_time_s"`
 }
 
@@ -51,6 +53,7 @@ type DocumentScrapeResponse struct {
 	Result    json.RawMessage `json:"result"`
 	Path      string          `json:"path"`
 	Model     string          `json:"model_used"`
+	Provider  string          `json:"provider_used"`
 	TotalTime float64         `json:"total_time_s"`
 }
 
@@ -65,6 +68,7 @@ type SearchResponse struct {
 	Result    json.RawMessage `json:"result"`
 	URLs      []string        `json:"urls_scraped"`
 	Model     string          `json:"model_used"`
+	Provider  string          `json:"provider_used"`
 	TotalTime float64         `json:"total_time_s"`
 }
 
@@ -83,6 +87,7 @@ type DepthSearchResponse struct {
 	Result      json.RawMessage `json:"result"`
 	VisitedURLs []string        `json:"visited_urls"`
 	Model       string          `json:"model_used"`
+	Provider    string          `json:"provider_used"`
 	TotalTime   float64         `json:"total_time_s"`
 }
 

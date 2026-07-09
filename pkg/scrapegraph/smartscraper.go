@@ -80,8 +80,10 @@ func (s *SmartScraperGraph) Run(ctx context.Context) (json.RawMessage, error) {
 func (s *SmartScraperGraph) executeOnce(ctx context.Context) (json.RawMessage, error) {
 	g := graph.NewGraph(s.config)
 
-	// Create LLM client
-	llmClient := llm.NewOpenAIClient(s.config.LLMAPIKey, s.config)
+	llmClient, err := llm.NewClient(s.config)
+	if err != nil {
+		return nil, fmt.Errorf("configure LLM: %w", err)
+	}
 
 	loader := loaders.NewFetchLoader(s.source, s.config)
 

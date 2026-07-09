@@ -205,7 +205,13 @@ func (d *DepthSearchGraph) discoverLinks(ctx context.Context, pageURL string) ([
 	}
 
 	// Use SearchLinkNode to extract links
-	llmClient := llm.NewOpenAIClient(d.config.LLMAPIKey, d.config)
+	var llmClient llm.LLM
+	if d.filterByLLM {
+		llmClient, err = llm.NewClient(d.config)
+		if err != nil {
+			return nil, fmt.Errorf("configure LLM: %w", err)
+		}
+	}
 	linkNode := nodes.NewSearchLinkNode(nodes.SearchLinkConfig{
 		LLMClient:   llmClient,
 		Prompt:      d.prompt,
@@ -236,7 +242,10 @@ func (d *DepthSearchGraph) mergeResults(ctx context.Context) (json.RawMessage, e
 		return d.attachMeta(d.allResults[0]), nil
 	}
 
-	llmClient := llm.NewOpenAIClient(d.config.LLMAPIKey, d.config)
+	llmClient, err := llm.NewClient(d.config)
+	if err != nil {
+		return nil, fmt.Errorf("configure LLM: %w", err)
+	}
 	mergeNode := nodes.NewMergeAnswersNode(llmClient, d.prompt, d.verbose)
 
 	state := graph.NewState()

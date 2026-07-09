@@ -1,7 +1,17 @@
 # Active Context
 
 ## Current State
-GoScrape2 has completed another meaningful implementation slice and is now approximately **~44% complete** compared to full ScrapeGraphAI.
+GoScrape2 has completed another meaningful implementation slice and is now approximately **~46% complete** compared to full ScrapeGraphAI.
+
+## What Was Built This Session (2026-07-09)
+
+### 37. OpenRouter Provider Foundation
+- Added first-class `openai` and `openrouter` provider selection to shared config
+- Added a provider factory used by every LLM-backed graph
+- Added OpenRouter base URL, attribution headers, and strict JSON routing requirements
+- Added server-wide provider configuration through generic and provider-specific env vars
+- Added offline provider contract tests and a runnable OpenRouter example
+- **Impact:** future native and OpenAI-compatible providers now have a single integration point
 
 ## What Was Built This Session (2026-05-19)
 

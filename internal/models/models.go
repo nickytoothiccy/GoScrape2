@@ -7,6 +7,10 @@ import "encoding/json"
 type Config struct {
 	LLMModel           string
 	LLMAPIKey          string
+	LLMProvider        string
+	LLMBaseURL         string
+	LLMHTTPReferer     string
+	LLMAppTitle        string
 	Temperature        float64
 	MaxTokens          int
 	Verbose            bool
@@ -22,6 +26,7 @@ type Config struct {
 func DefaultConfig() *Config {
 	return &Config{
 		LLMModel:           "gpt-4o",
+		LLMProvider:        "openai",
 		Temperature:        0,
 		MaxTokens:          4000,
 		Verbose:            false,

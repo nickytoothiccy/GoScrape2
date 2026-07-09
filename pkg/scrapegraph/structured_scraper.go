@@ -20,6 +20,7 @@ type structuredScraper struct {
 	source     string
 	name       string
 	loader     loaders.Loader
+	llmClient  llm.LLM
 	newGenNode func(llm.LLM, string, string) graph.Node
 }
 
@@ -28,7 +29,15 @@ func (s *structuredScraper) run(ctx context.Context) (json.RawMessage, error) {
 	var runErr error
 	defer func() { telemetry.LogGraph(s.name, start, runErr) }()
 	g := graph.NewGraph(s.config)
-	llmClient := llm.NewOpenAIClient(s.config.LLMAPIKey, s.config)
+	llmClient := s.llmClient
+	if llmClient == nil {
+		var err error
+		llmClient, err = llm.NewClient(s.config)
+		if err != nil {
+			runErr = fmt.Errorf("configure LLM: %w", err)
+			return nil, runErr
+		}
+	}
 	fetchNode := nodes.NewFetchNode(s.loader, s.config)
 	parseNode := nodes.NewParseNode(s.config)
 	generateNode := s.newGenNode(llmClient, s.prompt, s.schemaHint)

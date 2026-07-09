@@ -113,10 +113,11 @@
 **Multi-Page Extraction:**
 - ✅ SmartScraperMultiGraph
 
-## Phase 4: Multi-Model Support (1/10 = 10%)
+## Phase 4: Multi-Model Support (2/10 = 20%)
 
 **Completed:**
 - ✅ OpenAI (gpt-4o, gpt-4o-mini, JSON mode, streaming-ready)
+- ✅ OpenRouter (OpenAI-compatible transport, provider headers, strict JSON routing)
 - ✅ LLM interface (all providers implement same contract)
 
 **Not Started:**
@@ -152,7 +153,7 @@
 - [ ] Vision model support
 - [ ] Speech synthesis
 
-## Overall Completion: ~45%
+## Overall Completion: ~46%
 
 **What's Working:**
 - SmartScraperGraph with retry + Rod headless browser support
@@ -186,6 +187,7 @@
 - Centralized anti-bot block detection heuristics for common challenge/block pages
 - HTML→text conversion
 - OpenAI extraction (gpt-4o/gpt-4o-mini)
+- OpenRouter extraction across all LLM-backed graphs through the shared provider factory
 - HTTP API (scrape, search, depth-search, fetch, health)
 - HTTP `/screenshot` endpoint for screenshot capture workflows
 - HTTP timing/structured logs for endpoint telemetry
@@ -200,10 +202,10 @@
 - Repo-local Go toolchain scripts (`scripts/setup-local-go.sh`, `scripts/use-local-go.sh`) with local `.dev-env` caches for cross-machine portability
 
 **What's Missing:**
-- 68% of the library
+- Approximately 54% of the library
 - 20 more node types
 - 17 more graph types
-- 9 model providers
+- 8 model providers
 - Telemetry
  - Additional document graph variants and richer document processing
 - Better extraction quality tuning for large-site crawls, including testing with stronger models before judging final scrape quality

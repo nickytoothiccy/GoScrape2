@@ -46,5 +46,5 @@ func (s *Server) handleDocumentScrape(w http.ResponseWriter, r *http.Request) {
 		writeError(w, status, err.Error())
 		return
 	}
-	writeJSON(w, status, DocumentScrapeResponse{Result: result, Path: req.Path, Model: cfg.LLMModel, TotalTime: time.Since(start).Seconds()})
+	writeJSON(w, status, DocumentScrapeResponse{Result: result, Path: req.Path, Model: cfg.LLMModel, Provider: cfg.LLMProvider, TotalTime: time.Since(start).Seconds()})
 }

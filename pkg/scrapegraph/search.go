@@ -71,7 +71,10 @@ func (s *SearchGraph) Run(ctx context.Context) (json.RawMessage, error) {
 		defer cancel()
 	}
 
-	llmClient := llm.NewOpenAIClient(s.config.LLMAPIKey, s.config)
+	llmClient, err := llm.NewClient(s.config)
+	if err != nil {
+		return nil, fmt.Errorf("configure LLM: %w", err)
+	}
 
 	// Phase 1: Search the internet for relevant URLs
 	urls, err := s.searchPhase(ctx, llmClient)
